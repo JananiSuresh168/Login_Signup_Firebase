@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class SignupForm extends AppCompatActivity {
     public static final String TAG = "TAG";
-    EditText mFullName, mEmail, mPhone,mPassword;
+    EditText mFullName, mEmail, mPhone,mPassword, mconfirmPassword;
     Button mRegisterBtn, mLoginBtn;
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
@@ -44,28 +44,39 @@ public class SignupForm extends AppCompatActivity {
         mEmail                   =findViewById(R.id.Email);
         mPhone                   =findViewById(R.id.phone);
         mPassword                =findViewById(R.id.password);
+        mconfirmPassword         =findViewById(R.id.confirmPassword);
         mRegisterBtn             =findViewById(R.id.registerBtn);
         mLoginBtn                =findViewById(R.id.loginBtn);
 
         fAuth = FirebaseAuth.getInstance();
         fStore= FirebaseFirestore.getInstance();
 
-        if(fAuth.getCurrentUser() !=null)
-        {
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-            finish();
-        }
+        //if(fAuth.getCurrentUser() !=null)
+        //{
+            //startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            //finish();
+        //}
 
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
+                String confirmpassword = mconfirmPassword.getText().toString().trim();
                 final String fullName = mFullName.getText().toString();
                 final String phone = mPhone.getText().toString();
 
+
                 if (TextUtils.isEmpty(email)) {
                     mEmail.setError("Email is required");
+                    return;
+                }
+                if (TextUtils.isEmpty(fullName)) {
+                    mFullName.setError("Name is required");
+                    return;
+                }
+                if (TextUtils.isEmpty(phone)) {
+                    mPhone.setError("Phone Number is required");
                     return;
                 }
                 if (TextUtils.isEmpty(password)) {
@@ -74,6 +85,13 @@ public class SignupForm extends AppCompatActivity {
                 }
                 if (password.length() < 6) {
                     mPassword.setError("Password must be >=6 characters");
+                    return;
+                }
+                if(password!=confirmpassword){
+                    mconfirmPassword.setError("Does not match password");
+                }
+                if (TextUtils.isEmpty(confirmpassword)) {
+                    mconfirmPassword.setError("Field is required");
                     return;
                 }
 
